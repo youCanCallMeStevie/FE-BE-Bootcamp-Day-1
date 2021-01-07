@@ -38,6 +38,7 @@ exports.calcTotalDuration = questions => {
     console.log("dur", question.duration, "type", typeof question.duration);
     totalDuration += question.duration;
   }
+  return totalDuration
 };
 exports.readExam = () => {
   return readDB(examsPath);
@@ -60,10 +61,12 @@ exports.findByID = async id => {
 
 exports.writeEditedExam = async exam => {
   const { _id } = exam;
-  const allExams = await readDB(examsPath);
-  foundExam = allExams.find(exam => exam._id === _id);
+  let allExams = await readDB(examsPath);
+  const foundExam = allExams.find(exam => exam._id === _id);
+  allExams = allExams.filter(exam => exam._id !== _id);
   foundExam.questions = exam.questions;
-  await writeDB(examsPath, foundExam);
+  allExams.push(foundExam)
+  await writeDB(examsPath, allExams);
 };
 
 exports.calcTotalScore = exam => {

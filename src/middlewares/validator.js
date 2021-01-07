@@ -1,19 +1,37 @@
 const { check, validationResult } = require("express-validator");
 
-exports.examValidator = [
-  check("question")
-    .notEmpty()
+exports.examResultValidator = [
+  check(".*.question")
+    .exists()
+    .withMessage("You need to identify the question you want to answer")
     .isNumeric()
-    .withMessage("Question field is required and should be number"),
-  check("answer")
-    .notEmpty()
-    .withMessage("Answer field is required and should be number")
-    .isNumeric(),
+    .withMessage(
+      "Use a number to identify the index position of the question you are answering"
+    ),
+  check(".*.answer")
+    .exists()
+    .withMessage("You need to identify the answer you want to select")
+    .isNumeric()
+    .withMessage(
+      "Use a number to identify the index position of the answer you are selecting"
+    ),
+];
+
+exports.examValidator = [
+  check("candidateName")
+    .exists()
+    .withMessage("Candidate name is required.")
+    .isString()
+    .withMessage("Name message should be text"),
+  check("name")
+    .exists()
+    .withMessage("Name of exam is required")
+    ,
 ];
 
 exports.questionValidator = [
   check("text")
-    .notEmpty()
+    .exists()
     .withMessage("Text field is required")
     .isString()
     .withMessage("Text field should be a string")
@@ -26,7 +44,9 @@ exports.questionValidator = [
     .withMessage("Duration should be numeric"),
   check("answer").exists(),
   check("answer.*.text").exists().withMessage("Please provide answer"),
-  check("answer.*.isCorrect").exists().withMessage("Please show which answer is correct"),
+  check("answer.*.isCorrect")
+    .exists()
+    .withMessage("Please show which answer is correct"),
 ];
 
 exports.validatorResult = (req, res, next) => {
