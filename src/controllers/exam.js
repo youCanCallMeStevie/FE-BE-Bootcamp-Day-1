@@ -23,14 +23,13 @@ exports.examStartController = async (req, res, next) => {
     const questions = await randomQuestions();
     newExam.questions = questions;
     // const totalDuration = newExam.questions.reduce(reducer, 0)
-
     newExam.totalDuration = calcTotalDuration(newExam.questions);
     await writeExam(newExam);
-    res.send(201).json({ success: true, data: newExam });
+    res.status(201).json({ success: true, data: newExam });
   } catch (error) {
     console.log("Exam start error", error);
     res
-      .sendStatus(500)
+      .status(500)
       .json({ success: false, errors: "Internal Server Error" });
   }
 };
